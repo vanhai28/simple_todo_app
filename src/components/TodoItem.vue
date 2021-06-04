@@ -1,32 +1,62 @@
 <template>
-     <div class="todo-item row">
-            <div class="col-sm-10">
-              <div class="todo-content mb-4">
-                {{todo.content}}
-              </div>
-            </div>
+  <div class="todo-item row">
+    <div class="col-sm-8">
+      <div class="todo-content mb-4">
+        {{ todo.content }}
+      </div>
+    </div>
 
-            <div class="col-sm-2">
-              <button class="btn btn-danger"
-                @click="removeTodo" >
-                  Remove
-              </button>
-            </div>
-          </div>
+     <div class="col-sm-4">
+       <div class="btn-group" role="group" v-if="todo.status == status.STATUS_IN_COMPLETE">
+            <button
+                class="btn badge badge-primary"
+                @click="toggleStatus"
+                >
+                {{ todo.status }}
+            </button>
+             <button class="btn btn-danger" @click="removeTodo">Remove</button>
+       </div>
+       <div class="btn-group" role="group" v-else>
+            <button
+                class="btn badge badge-success"
+                    @click="toggleStatus"
+                >
+                {{ todo.status }}
+            </button> 
+             <button class="btn btn-danger" @click="removeTodo">Remove</button>
+       </div>
+
+    </div>
+  </div>
 </template>
 
 <script> 
+import * as status from '../common/constant';
 
 export default {
   name: "TodoItem",
   props: {
-    todo : Object,
+    todo: Object,
   },
-  methods:{
-   removeTodo:function(){
-     this.$emit("removeTodo",this.todo.content )
-   }
-  }
+  data(){
+    return {
+      status,
+    }
+  },
+  methods: {
+    removeTodo: function () {
+      this.$emit("removeTodo", this.todo);
+    },
+    toggleStatus: function () 
+    {
+      this.todo.status =
+        this.todo.status === this.status.STATUS_IN_COMPLETE
+          ? this.status.STATUS_COMPLETED
+          : this.status.STATUS_IN_COMPLETE;
+
+      this.$emit("toggleStatus", this.todo);
+    },
+  },
 };
 </script>
 
